@@ -20,5 +20,5 @@ async function getGithub() {
 }
 
 
-// You need to have a file that gives the dependencies.
+// You need to have a package.json file that gives the dependencies.
 // This way, you can use the command "node i", to install those dependencies
