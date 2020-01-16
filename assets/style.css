@@ -1,0 +1,15 @@
+h3 {
+    margin-top: 10px;
+}
+
+.container {
+    margin: 0 auto;
+}
+
+.cardTitle {
+    color: white !important;
+}
+
+.white-text {
+    font-size: 20px;
+}
