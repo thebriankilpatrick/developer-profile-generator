@@ -1,24 +1,33 @@
 const axios = require("axios");
 const inquirer = require("inquirer");
+const fs = require("fs");
+const util = require("util");
 
 getGithub()
 
 async function getGithub() {
     try {
-        const { github } = await inquirer.prompt({
+        const github = await inquirer.prompt({
+            type: "input",
             message: "Enter your GitHub profile",
-            name: "github profile"
+            name: "user"
         });
 
-        const { data } = await axios.get(
-            `https://github.com/${github}`
+        // const { favColor } = await inquirer.prompt({
+        //     message: "Enter your favorite color",
+        //     name: "favorit color"
+        // })
+
+        const githubResult = await axios.get(
+            `https://api.github.com/users/${github.user}`
         );
+        console.log(githubResult);
+        
     }
     catch (err) {
         console.log(err);
     }
 }
 
-
-// You need to have a package.json file that gives the dependencies.
-// This way, you can use the command "node i", to install those dependencies
+// getGithub function does not work as expected.  The github account that gets passed in, is showing as null.
+// Thus, no account will pull
