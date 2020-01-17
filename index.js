@@ -25,13 +25,16 @@ async function getGithub() {
         );
         console.log(githubResult.data);
         // return githubResult;
+        const html = generateHTML(githubResult);
+
+        writeFileAsync("index.html", html);
     }
     catch (err) {
         console.log(err);
     }
 }
 
-function generateHTML() {
+function generateHTML(githubResult) {
     return `
     <!DOCTYPE html>
 <html>
@@ -50,7 +53,7 @@ function generateHTML() {
                 <div class="col s12 m12 l12">
                     <div class="card-panel indigo lighten-2 center-align">
                         <a>
-                            <img class="circle" src="">
+                            <img class="circle" src="${githubResult.data.avatar_url}">
                         </a>
                         <h3 class="cardTitle">Hello there!</h3>
                         <h4 class="cardTitle">My name is ${githubResult.data.name}</h4>
