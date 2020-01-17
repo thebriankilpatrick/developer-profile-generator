@@ -18,6 +18,7 @@
   "homepage": "https://github.com/thebriankilpatrick/developer-profile-generator#readme",
   "dependencies": {
     "axios": "^0.19.1",
-    "inquirer": "^7.0.3"
+    "inquirer": "^7.0.3",
+    "puppeteer": "^2.0.0"
   }
 }

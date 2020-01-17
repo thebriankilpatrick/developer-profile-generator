@@ -2,6 +2,7 @@ const axios = require("axios");
 const inquirer = require("inquirer");
 const fs = require("fs");
 const util = require("util");
+const puppeteer = require('puppeteer');
 
 const writeFileAsync = util.promisify(fs.writeFile);
 
@@ -21,23 +22,27 @@ async function getGithub() {
             name: "color"
         })
 
-        console.log(favColor.color);
         const setColor = favColor.color;
 
         const githubStars = await axios.get(
             `https://api.github.com/users/${github.user}/starred`
         );
 
-        // console.log(githubStars.data.length);
-
         const githubResult = await axios.get(
             `https://api.github.com/users/${github.user}`
         );
-        // console.log(githubResult.data);
 
         const html = generateHTML(githubResult, githubStars, setColor);
 
-        writeFileAsync("index.html", html);
+        writeFileAsync("index.html", html)
+            .then((async () => {
+                const browser = await puppeteer.launch();
+                const page = await browser.newPage();
+                await page.setContent(html); // pdf of the html page does not contain the Materialize or CSS styling.  How to fix?
+                await page.pdf({path: 'devProfile.pdf', format: 'A4'});
+               
+                await browser.close();
+              })())
     }
     catch (err) {
         console.log(err);
@@ -73,7 +78,9 @@ function generateHTML(githubResult, githubStars, setColor) {
                         </span>
                         <br>
                         <span class="white-text">
-                            Github:${githubResult.data.html_url}  Blog: ${githubResult.data.blog}
+                            Github: ${githubResult.data.html_url}  
+                            <br>
+                            Blog: ${githubResult.data.blog}
                         </span>
                     </div>
                 </div>
@@ -129,3 +136,14 @@ function generateHTML(githubResult, githubStars, setColor) {
     </body>
 </html>`;
 }
+
+// const puppeteer = require('puppeteer');
+ 
+// (async () => {
+//   const browser = await puppeteer.launch();
+//   const page = await browser.newPage();
+//   await page.goto('index.html', {waitUntil: 'networkidle2'});
+//   await page.pdf({path: 'devProfile.pdf', format: 'A4'});
+ 
+//   await browser.close();
+// })();
