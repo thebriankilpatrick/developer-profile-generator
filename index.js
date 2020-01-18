@@ -32,17 +32,20 @@ async function getGithub() {
             `https://api.github.com/users/${github.user}`
         );
 
+        console.log("One moment please...")
+
         const html = generateHTML(githubResult, githubStars, setColor);
 
         writeFileAsync("index.html", html)
             .then((async () => {
                 const browser = await puppeteer.launch();
                 const page = await browser.newPage();
-                await page.setContent(`https://thebriankilpatrick.github.io/developer-profile-generator/index.html`); // pdf of the html page does not contain the Materialize or CSS styling.  How to fix?
-                await page.pdf({path: 'devProfile.pdf', format: 'A4'});
+                await page.setContent(html); // pdf of the html page does not contain the Materialize or CSS styling.  How to fix?
+                await page.pdf({path: 'devProfile.pdf', format: 'A4', printBackground: true});
                
                 await browser.close();
-              })())
+                console.log("Your PDF Developer Profile has been created.")
+            })())
     }
     catch (err) {
         console.log(err);
@@ -55,10 +58,31 @@ function generateHTML(githubResult, githubStars, setColor) {
 <html>
     <head>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-        <link rel="stylesheet" href="assets/style.css">
         <link href="https://fonts.googleapis.com/css?family=Gayathri&display=swap" rel="stylesheet">
     </head>
     <body>
+        <style>
+        body {
+            font-family: 'Gayathri', sans-serif;
+            background-color: rgb(214, 214, 214);
+        }
+        
+        h3 {
+            margin-top: 10px;
+        }
+        
+        .container {
+            margin: 0 auto;
+        }
+        
+        .cardTitle {
+            color: white !important;
+        }
+        
+        .white-text {
+            font-size: 20px;
+        }
+        </style>
         <nav>
             <div class="nav-wrapper ${setColor} lighten-2">
               <a href="#" class="brand-logo center">${githubResult.data.name}</a>
@@ -101,7 +125,7 @@ function generateHTML(githubResult, githubStars, setColor) {
             <div class="row">
                 <div class="col s6 m6 l6">
                     <div class="card-panel ${setColor} lighten-2 center-align">
-                        <h4 class="cardTitle">Public Repositories</h4>
+                        <h5 class="cardTitle">Public Repositories</h5>
                         <span class="white-text">
                         ${githubResult.data.public_repos}
                         </span>
@@ -109,7 +133,7 @@ function generateHTML(githubResult, githubStars, setColor) {
                 </div>
                 <div class="col s6 m6 l6">
                     <div class="card-panel ${setColor} lighten-2 center-align">
-                        <h4 class="cardTitle">Followers</h4>
+                        <h5 class="cardTitle">Followers</h5>
                         <span class="white-text">
                             ${githubResult.data.followers}
                         </span>
@@ -117,7 +141,7 @@ function generateHTML(githubResult, githubStars, setColor) {
                 </div>
                 <div class="col s6 m6 l6">
                     <div class="card-panel ${setColor} lighten-2 center-align">
-                        <h4 class="cardTitle">GitHub Stars</h4>
+                        <h5 class="cardTitle">GitHub Stars</h5>
                         <span class="white-text">
                             ${githubStars.data.length}
                         </span>
@@ -125,7 +149,7 @@ function generateHTML(githubResult, githubStars, setColor) {
                 </div>
                 <div class="col s6 m6 l6">
                     <div class="card-panel ${setColor} lighten-2 center-align">
-                        <h4 class="cardTitle">Following</h4>
+                        <h5 class="cardTitle">Following</h5>
                         <span class="white-text">
                             ${githubResult.data.following}
                         </span>
@@ -136,14 +160,3 @@ function generateHTML(githubResult, githubStars, setColor) {
     </body>
 </html>`;
 }
-
-// const puppeteer = require('puppeteer');
- 
-// (async () => {
-//   const browser = await puppeteer.launch();
-//   const page = await browser.newPage();
-//   await page.goto('index.html', {waitUntil: 'networkidle2'});
-//   await page.pdf({path: 'devProfile.pdf', format: 'A4'});
- 
-//   await browser.close();
-// })();
