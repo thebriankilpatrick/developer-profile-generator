@@ -38,7 +38,7 @@ async function getGithub() {
             .then((async () => {
                 const browser = await puppeteer.launch();
                 const page = await browser.newPage();
-                await page.setContent(html); // pdf of the html page does not contain the Materialize or CSS styling.  How to fix?
+                await page.setContent(`https://thebriankilpatrick.github.io/developer-profile-generator/index.html`); // pdf of the html page does not contain the Materialize or CSS styling.  How to fix?
                 await page.pdf({path: 'devProfile.pdf', format: 'A4'});
                
                 await browser.close();
