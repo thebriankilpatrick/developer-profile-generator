@@ -10,12 +10,14 @@ getGithub()
 
 async function getGithub() {
     try {
+        // Prompting for github user
         const github = await inquirer.prompt({
             type: "input",
             message: "Enter your GitHub profile",
             name: "user"
         });
 
+        // Prompting for color
         const favColor = await inquirer.prompt({
             type: "input",
             message: "Enter your favorite color",
@@ -24,23 +26,27 @@ async function getGithub() {
 
         const setColor = favColor.color;
 
+        // Axios call to get github star count
         const githubStars = await axios.get(
             `https://api.github.com/users/${github.user}/starred`
         );
 
+        // Axios call to get github user info
         const githubResult = await axios.get(
             `https://api.github.com/users/${github.user}`
         );
 
         console.log("One moment please...")
 
+        // Declaring html as the generateHTML function.
+        // Passing in the github info, github stars, and color into the function
         const html = generateHTML(githubResult, githubStars, setColor);
 
         writeFileAsync("index.html", html)
             .then((async () => {
                 const browser = await puppeteer.launch();
                 const page = await browser.newPage();
-                await page.setContent(html, {waitUntil: "networkidle2"}); // pdf of the html page does not contain the Materialize or CSS styling.  How to fix?
+                await page.setContent(html, {waitUntil: "networkidle2"});
                 await page.pdf({path: 'devProfile.pdf', format: 'A4', printBackground: true});
                
                 await browser.close();
@@ -52,6 +58,8 @@ async function getGithub() {
     }
 }
 
+// Function for the html generation.
+// The Font Awesome icons do not render in the pdf. However, they still apear if the user opens the html page.
 function generateHTML(githubResult, githubStars, setColor) {
     return `
     <!DOCTYPE html>
