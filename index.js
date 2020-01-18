@@ -40,7 +40,7 @@ async function getGithub() {
             .then((async () => {
                 const browser = await puppeteer.launch();
                 const page = await browser.newPage();
-                await page.setContent(html); // pdf of the html page does not contain the Materialize or CSS styling.  How to fix?
+                await page.setContent(html, {waitUntil: "networkidle2"}); // pdf of the html page does not contain the Materialize or CSS styling.  How to fix?
                 await page.pdf({path: 'devProfile.pdf', format: 'A4', printBackground: true});
                
                 await browser.close();
@@ -58,27 +58,27 @@ function generateHTML(githubResult, githubStars, setColor) {
 <html>
     <head>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-        <link href="https://fonts.googleapis.com/css?family=Gayathri&display=swap" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/5442a2e73b.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <style>
+        @import url("https://fonts.googleapis.com/css?family=Gayathri&display=swap");
         body {
             font-family: 'Gayathri', sans-serif;
             background-color: rgb(214, 214, 214);
-        }
-        
+        }        
         h3 {
             margin-top: 10px;
         }
-        
+        i {
+            color: white;
+        }  
         .container {
             margin: 0 auto;
-        }
-        
+        }       
         .cardTitle {
             color: white !important;
-        }
-        
+        }       
         .white-text {
             font-size: 20px;
         }
@@ -98,13 +98,13 @@ function generateHTML(githubResult, githubStars, setColor) {
                         <h3 class="cardTitle">Hello there!</h3>
                         <h4 class="cardTitle">My name is ${githubResult.data.name}</h4>
                         <span class="white-text">
-                            ${githubResult.data.location}
+                           <a class="white-text" href="https://www.google.com/maps/place/${githubResult.data.location}">${githubResult.data.location}</a>
                         </span>
                         <br>
                         <span class="white-text">
-                            Github: ${githubResult.data.html_url}  
+                            <a class="white-text" href="${githubResult.data.html_url}"><i class="fab fa-github"></i>Github</a>
                             <br>
-                            Blog: ${githubResult.data.blog}
+                            <a class="white-text" href="${githubResult.data.blog}"><i class="fas fa-rss"></i>Blog</a>
                         </span>
                     </div>
                 </div>
